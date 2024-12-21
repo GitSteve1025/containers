@@ -72,3 +72,22 @@ func TestInsert(t *testing.T) {
 		t.Log(vec, vec.Size())
 	}
 }
+
+func TestErase(t *testing.T) {
+	vec := make(Vector[int], 15)
+	for i := 0; i < 15; i++ {
+		vec[i] = i
+	}
+
+	for i := 0; i < 5; i++ {
+		t.Log(vec, vec.Erase(0))
+	}
+
+	for i := 0; i < 5; i++ {
+		t.Log(vec, vec.Erase(4))
+	}
+
+	for i := 0; i < 5; i++ {
+		t.Log(vec, vec.Erase(vec.Size()-1))
+	}
+}

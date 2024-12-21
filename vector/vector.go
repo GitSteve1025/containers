@@ -53,3 +53,12 @@ func (vec *Vector[T]) Insert(pos int, val T) {
 	copy((*vec)[pos+1:], (*vec)[pos:])
 	(*vec)[pos] = val
 }
+
+// Erase returns the value of the pos-th element.
+func (vec *Vector[T]) Erase(pos int) T {
+	defer func() {
+		copy((*vec)[pos:], (*vec)[pos+1:])
+		*vec = (*vec)[:len(*vec)-1]
+	}()
+	return (*vec)[pos]
+}
