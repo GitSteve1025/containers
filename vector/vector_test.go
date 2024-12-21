@@ -106,3 +106,17 @@ func TestAt(t *testing.T) {
 		}
 	}
 }
+
+func TestShrinkToFit(t *testing.T) {
+	const N = 10
+	const B = 5
+	vec := make(Vector[string], N)
+	for i := 0; i < B; i++ {
+		vec.PopBack()
+	}
+	t.Log(vec.Size(), vec.Capacity())
+	vec.ShrinkToFit()
+	if N-B != vec.Capacity() {
+		t.Fatal("shrink to fit failed")
+	}
+}

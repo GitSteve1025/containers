@@ -75,3 +75,11 @@ func (vec *Vector[T]) At(pos int) (T, error) {
 	}
 	return (*vec)[pos], nil
 }
+
+// ShrinkToFit is to reduce Capacity() to Size().
+// This function will create a new slice.
+func (vec *Vector[T]) ShrinkToFit() {
+	temp := make(Vector[T], len(*vec))
+	copy(temp, *vec)
+	*vec = temp
+}
