@@ -102,7 +102,7 @@ func TestAt(t *testing.T) {
 		if err != nil {
 			t.Log(err)
 		} else {
-			t.Log(val)
+			t.Log(*val)
 		}
 	}
 }
