@@ -19,7 +19,7 @@ func TestMake(t *testing.T) {
 
 func TestFrontBack(t *testing.T) {
 	vec := make(Vector[int], 10)
-	t.Log(vec.Front(), vec.Back())
+	t.Log(*vec.Front(), *vec.Back())
 }
 
 func TestPushPop(t *testing.T) {

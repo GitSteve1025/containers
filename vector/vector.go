@@ -29,14 +29,14 @@ func (vec *Vector[T]) Empty() bool {
 	return len(*vec) == 0
 }
 
-// Front returns the data at the first element of the vector.
-func (vec *Vector[T]) Front() T {
-	return (*vec)[0]
+// Front returns the reference of data at the first element of the vector.
+func (vec *Vector[T]) Front() *T {
+	return &(*vec)[0]
 }
 
-// Back returns the data at the last element of the vector.
-func (vec *Vector[T]) Back() T {
-	return (*vec)[len(*vec)-1]
+// Back returns the reference of data at the last element of the vector.
+func (vec *Vector[T]) Back() *T {
+	return &(*vec)[len(*vec)-1]
 }
 
 // Resize resizes the vector to the specified number of elements.
