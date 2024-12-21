@@ -91,3 +91,18 @@ func TestErase(t *testing.T) {
 		t.Log(vec, vec.Erase(vec.Size()-1))
 	}
 }
+
+func TestAt(t *testing.T) {
+	var vec Vector[string]
+	vec.PushBack("a")
+	vec.PushBack("b")
+	vec.PushBack("c")
+	for i := 0; i < 5; i++ {
+		val, err := vec.At(i)
+		if err != nil {
+			t.Log(err)
+		} else {
+			t.Log(val)
+		}
+	}
+}

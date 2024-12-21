@@ -3,6 +3,8 @@
 
 package vector
 
+import "errors"
+
 type Vector[T any] []T
 
 func (vec *Vector[T]) Size() int {
@@ -61,4 +63,15 @@ func (vec *Vector[T]) Erase(pos int) T {
 		*vec = (*vec)[:len(*vec)-1]
 	}()
 	return (*vec)[pos]
+}
+
+// This function provides for safer data access.
+// The parameter is first checked that it is in the range of the vector.
+// The function throws index out of range if the check fails.
+func (vec *Vector[T]) At(pos int) (T, error) {
+	if pos < 0 || pos >= len(*vec) {
+		var val T
+		return val, errors.New("index is out of range")
+	}
+	return (*vec)[pos], nil
 }
