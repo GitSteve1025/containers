@@ -7,6 +7,13 @@ import "errors"
 
 type Vector[T any] []T
 
+// New creates a new empty Vector[T].
+// Also, vec := make(Vector[T], ...) is valid.
+func New[T any]() *Vector[T] {
+	var vec Vector[T]
+	return &vec
+}
+
 // Size returns the number of elements in the vector.
 func (vec *Vector[T]) Size() int {
 	return len(*vec)

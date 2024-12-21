@@ -120,3 +120,23 @@ func TestShrinkToFit(t *testing.T) {
 		t.Fatal("shrink to fit failed")
 	}
 }
+
+func TestNew(t *testing.T) {
+	vec := New[int]()
+	for i := 0; i < 10; i++ {
+		vec.PushBack(i)
+		t.Log(vec.Size())
+	}
+	for i := 0; i < 10; i++ {
+		vec.Insert(i, 0)
+		t.Log(vec.Size())
+	}
+	for i := 0; i < 10; i++ {
+		vec.Erase(i)
+		t.Log(vec.Size())
+	}
+	for i := 0; i < 10; i++ {
+		vec.PopBack()
+		t.Log(vec.Size())
+	}
+}
