@@ -10,8 +10,7 @@ type Vector[T any] []T
 // New creates a new empty Vector[T].
 // Also, vec := make(Vector[T], ...) is valid.
 func New[T any]() *Vector[T] {
-	var vec Vector[T]
-	return &vec
+	return new(Vector[T])
 }
 
 // Size returns the number of elements in the vector.
