@@ -59,3 +59,35 @@ func (list *List[T]) PopBack() T {
 	}()
 	return list.tail.Value
 }
+
+// PushFront adds data to the begin of the list.
+func (list *List[T]) PushFront(val T) {
+	if list.head != nil {
+		list.head.Prev = &Element[T]{
+			Value: val,
+			Prev:  nil,
+			Next:  list.head,
+		}
+		list.head = list.head.Prev
+	} else {
+		list.head = &Element[T]{
+			Value: val,
+			Prev:  nil,
+			Next:  nil,
+		}
+		list.tail = list.head
+	}
+}
+
+// PopFront removes the first element and returns the value of the element.
+func (list *List[T]) PopFront() T {
+	defer func() {
+		list.head = list.head.Next
+		if list.head != nil {
+			list.head.Prev = nil
+		} else {
+			list.tail = nil
+		}
+	}()
+	return list.head.Value
+}
