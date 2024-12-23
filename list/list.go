@@ -2,6 +2,18 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package list implements a doubly linked list.
+//
+// To iterate over a list (where l is a *List):
+//
+//	for e := l.Front(); e != nil; e = e.Next() {
+//		// do something with e.Value
+//	}
+//
+//	// reverse
+//	for e := l.Back(); e != nil; e = l.Prev() {
+//	 	// do something with e.Value
+//	}
 package list
 
 type Element[T any] struct {
@@ -31,7 +43,7 @@ func (e *Element[T]) Next() *Element[T] {
 
 // doubly-linked list.
 type List[T any] struct {
-	// sentinel list element, only &root, root.prev, and root.next are used
+	// sentinel list element, &root, root.prev, and root.next are used, root.value represents the default value
 	root Element[T]
 	// length of list.
 	size int
@@ -130,8 +142,7 @@ func (list *List[T]) PopBack() T {
 		defer list.erase(list.root.prev)
 		return list.root.prev.Value
 	}
-	var dft T
-	return dft
+	return list.root.Value
 }
 
 // PopFront removes the first element and returns the value of the element.
@@ -141,18 +152,16 @@ func (list *List[T]) PopFront() T {
 		defer list.erase(list.root.next)
 		return list.root.next.Value
 	}
-	var dft T
-	return dft
+	return list.root.Value
 }
 
 // Erase erases at element and returns the value.
-// If at is not an element of list, the list is not modified.
+// If at is not an element of list, the list is not modified, it will return default value.
 // The at must not be nil.
 func (list *List[T]) Erase(at *Element[T]) T {
 	if at.list == list {
 		defer list.erase(at)
 		return at.Value
 	}
-	var dft T
-	return dft
+	return list.root.Value
 }
