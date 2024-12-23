@@ -140,3 +140,21 @@ func TestNew(t *testing.T) {
 		t.Log(vec.Size())
 	}
 }
+
+func TestNewWithDataAndClear(t *testing.T) {
+	vec := NewWithData(1, 2, 3, 4, 5)
+	if vec.Size() != 5 {
+		t.Error("new with data is wrong")
+	}
+
+	for i := 0; i < 5; i++ {
+		if vec.PopBack() != 5-i {
+			t.Error("popback data is invalid")
+		}
+	}
+
+	vec.Clear()
+	if !vec.Empty() {
+		t.Error("clear is invalid")
+	}
+}

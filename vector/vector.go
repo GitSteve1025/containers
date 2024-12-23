@@ -14,6 +14,15 @@ func New[T any]() *Vector[T] {
 	return new(Vector[T])
 }
 
+// NewWithData creates a Vector[T] with data
+func NewWithData[T any](data ...T) *Vector[T] {
+	vec := New[T]()
+	for _, x := range data {
+		*vec = append(*vec, x)
+	}
+	return vec
+}
+
 // Size returns the number of elements in the vector.
 func (vec *Vector[T]) Size() int {
 	return len(*vec)
@@ -60,12 +69,14 @@ func (vec *Vector[T]) PushBack(val T) {
 }
 
 // PopBack removes last element and returns the value of the element.
+// The vec must not be empty
 func (vec *Vector[T]) PopBack() T {
 	defer func() { *vec = (*vec)[:len(*vec)-1] }()
 	return (*vec)[len(*vec)-1]
 }
 
 // Insert inserts given value into vector before specified position.
+// The pos index must be in the the range of the vector.
 func (vec *Vector[T]) Insert(pos int, val T) {
 	*vec = append(*vec, val)
 	copy((*vec)[pos+1:], (*vec)[pos:])
@@ -73,6 +84,7 @@ func (vec *Vector[T]) Insert(pos int, val T) {
 }
 
 // Erase removes element at given position and returns the value of the element.
+// The pos index must be in the the range of the vector.
 func (vec *Vector[T]) Erase(pos int) T {
 	defer func() {
 		copy((*vec)[pos:], (*vec)[pos+1:])
@@ -97,4 +109,9 @@ func (vec *Vector[T]) ShrinkToFit() {
 	temp := make(Vector[T], len(*vec))
 	copy(temp, *vec)
 	*vec = temp
+}
+
+// Clear clears Vector[T]
+func (vec *Vector[T]) Clear() {
+	*vec = (*vec)[:0]
 }
