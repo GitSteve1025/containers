@@ -56,11 +56,30 @@ func New[T any]() *List[T] {
 	return list
 }
 
+// NewWithData creates a list which contains data
+func NewWithData[T any](data ...T) *List[T] {
+	list := New[T]()
+	for _, x := range data {
+		list.insertValue(x, &list.root)
+	}
+	return list
+}
+
 // init initializes or clears list.
 func (list *List[T]) init() {
 	list.root.prev = &list.root
 	list.root.next = &list.root
 	list.size = 0
+}
+
+// Size returns the length of the list
+func (list *List[T]) Size() int {
+	return list.size
+}
+
+// Empty returns true when list is empty
+func (list *List[T]) Empty() bool {
+	return list.size == 0
 }
 
 // Front returns the reference of data at the first element of the list.
@@ -164,4 +183,11 @@ func (list *List[T]) Erase(at *Element[T]) T {
 		return at.Value
 	}
 	return list.root.Value
+}
+
+// Clear clears the list
+func (list *List[T]) Clear() {
+	for list.size > 0 {
+		list.erase(list.root.prev)
+	}
 }

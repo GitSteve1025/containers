@@ -120,3 +120,63 @@ func TestWrongInsert(t *testing.T) {
 		t.Error("erase is error")
 	}
 }
+
+func TestAllFunction(t *testing.T) {
+	list := NewWithData(1, 2, 3, 4, 5)
+	if list.Front().Value != 1 || list.Back().Value != 5 {
+		t.Error("list front or back is invalid")
+	}
+	if list.Size() != 5 || list.Empty() {
+		t.Error("NewWithData is invalid")
+	}
+	list.Clear()
+	if list.Size() != 0 || !list.Empty() {
+		t.Error("clear is empty")
+	}
+	for i := 0; i < 5; i++ {
+		if i%2 == 0 {
+			list.PushFront(i)
+		} else {
+			list.PushBack(i)
+		}
+	}
+	// list -> 4 2 0 1 3
+
+	for i := 4; i >= 0; i-- {
+		if i%2 == 0 {
+			if list.Front().Value != i {
+				t.Error("list push front is invalid")
+			}
+			list.PopFront()
+		} else {
+			if list.Back().Value != i {
+				t.Error("list push back is invalid")
+			}
+			list.PopBack()
+		}
+	}
+
+	if list.PopFront() != 0 {
+		t.Error("popfront default value is invalid")
+	}
+
+	if list.PopBack() != 0 {
+		t.Error("popback default value is invalid")
+	}
+
+	temp := NewWithData(1)
+	if list.Erase(temp.Front()) != 0 {
+		t.Error("erase default value is invalid")
+	}
+
+	list.PushBack(1)
+	list.PushBack(2)
+	it := list.Back()
+	list.PushBack(3)
+	if list.Front().Value != 1 || list.Back().Value != 3 || list.Size() != 3 {
+		t.Error("push back is invalid")
+	}
+	if list.Erase(it) != 2 {
+		t.Error("erase is invalid")
+	}
+}
