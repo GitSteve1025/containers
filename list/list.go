@@ -56,7 +56,8 @@ func New[T any]() *List[T] {
 	return list
 }
 
-// NewWithData creates a list which contains data
+// NewWithData creates a list which contains data.
+// Data will be placed in order.
 func NewWithData[T any](data ...T) *List[T] {
 	list := New[T]()
 	for _, x := range data {
@@ -83,6 +84,7 @@ func (list *List[T]) Empty() bool {
 }
 
 // Front returns the reference of data at the first element of the list.
+// Return nil when the list is empty.
 func (list *List[T]) Front() *Element[T] {
 	if list.size != 0 {
 		return list.root.next
@@ -91,6 +93,7 @@ func (list *List[T]) Front() *Element[T] {
 }
 
 // Back returns the reference of data at the last element of the list.
+// Return nil when the list is empty.
 func (list *List[T]) Back() *Element[T] {
 	if list.size != 0 {
 		return list.root.prev
