@@ -6,6 +6,7 @@ package list
 
 import (
 	"testing"
+	"time"
 )
 
 func TestNew(t *testing.T) {
@@ -307,5 +308,41 @@ func TestAllFunction(t *testing.T) {
 	}
 	if list.Erase(it) != 2 {
 		t.Error("erase is invalid")
+	}
+}
+
+func TestPushPopEfficiency(t *testing.T) {
+	const N = 30000000
+	list := New[int]()
+	{
+		start := time.Now()
+		for i := 0; i < N; i++ {
+			list.PushBack(i)
+		}
+		t.Log("PushBack", N, " digits costs ", time.Since(start))
+	}
+
+	{
+		start := time.Now()
+		for i := 0; i < N; i++ {
+			list.PopBack()
+		}
+		t.Log("Popback", N, " digits costs ", time.Since(start))
+	}
+
+	{
+		start := time.Now()
+		for i := 0; i < N; i++ {
+			list.PushFront(i)
+		}
+		t.Log("PushFront", N, " digits costs ", time.Since(start))
+	}
+
+	{
+		start := time.Now()
+		for i := 0; i < N; i++ {
+			list.PopFront()
+		}
+		t.Log("Popfront", N, " digits costs ", time.Since(start))
 	}
 }
