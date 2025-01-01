@@ -106,8 +106,8 @@ func (list *List[T]) insert(v *Element[T], at *Element[T]) *Element[T] {
 	v.prev = at.prev
 	v.next = at
 	v.list = list
-	at.prev.next = v
-	at.prev = v
+	v.prev.next = v
+	v.next.prev = v
 	list.size++
 	return v
 }
