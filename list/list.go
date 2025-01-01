@@ -194,3 +194,57 @@ func (list *List[T]) Clear() {
 		list.erase(list.root.prev)
 	}
 }
+
+// move moves e in front of at.
+func (list *List[T]) move(e *Element[T], at *Element[T]) {
+	if e == at {
+		return
+	}
+	e.prev.next = e.next
+	e.next.prev = e.prev
+
+	e.prev = at.prev
+	e.next = at
+	e.prev.next = e
+	e.next.prev = e
+}
+
+// MoveToFront moves element e to the front of list.
+// If e is not an element of list, the list is not modified.
+// The element must not be nil.
+func (list *List[T]) MoveToFront(e *Element[T]) {
+	if e.list != list || list.root.next == e {
+		return
+	}
+	list.move(e, list.root.next)
+}
+
+// MoveToBack moves element e to the back of list.
+// If e is not an element of list, the list is not modified.
+// The element must not be nil.
+func (list *List[T]) MoveToBack(e *Element[T]) {
+	if e.list != list || list.root.prev == e {
+		return
+	}
+	list.move(e, &list.root)
+}
+
+// MoveBefore moves element e to its new position before at.
+// If e or at is not an element of list, or e == at, the list is not modified.
+// The element and at must not be nil.
+func (list *List[T]) MoveBefore(e *Element[T], at *Element[T]) {
+	if e.list != list || at.list != list || e == at {
+		return
+	}
+	list.move(e, at)
+}
+
+// MoveAfter moves element e to its new position after at.
+// If e or at is not an element of list, or e == at, the list is not modified.
+// The element and at must not be nil.
+func (list *List[T]) MoveAfter(e *Element[T], at *Element[T]) {
+	if e.list != list || at.list != list || e == at {
+		return
+	}
+	list.move(e, at.next)
+}

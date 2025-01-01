@@ -4,7 +4,9 @@
 
 package list
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestNew(t *testing.T) {
 	lt := New[string]()
@@ -122,6 +124,129 @@ func TestWrongInsert(t *testing.T) {
 	}
 	if b.Erase(ap) != 0 {
 		t.Error("erase is error")
+	}
+}
+
+func TestMoveToFront(t *testing.T) {
+	list := NewWithData(1, 2, 3)
+	back := list.Back()
+	list.MoveToFront(back)
+	// 3 1 2
+	if list.Front().Value != 3 {
+		t.Error("MoveToFront is invalid")
+	}
+
+	back = list.Back()
+	list.MoveToFront(back)
+	// 2 3 1
+	if list.Front().Value != 2 {
+		t.Error("MoveToFront is invalid")
+	}
+
+	back = list.Back()
+	list.MoveToFront(back)
+	// 1 2 3
+	if list.Front().Value != 1 {
+		t.Error("MoveToFront is invalid")
+	}
+
+	front := list.Front()
+	list.MoveToFront(front) // nothing to do
+	if list.Front().Value != 1 {
+		t.Error("MoveToFront is invalid")
+	}
+}
+
+func TestMoveToBack(t *testing.T) {
+	list := NewWithData(1, 2, 3)
+	front := list.Front()
+	list.MoveToBack(front)
+	// 2 3 1
+	if list.Back().Value != 1 {
+		t.Error("MoveToBack is invalid")
+	}
+
+	front = list.Front()
+	list.MoveToBack(front)
+	// 3 1 2
+	if list.Back().Value != 2 {
+		t.Error("MoveToBack is invalid")
+	}
+
+	front = list.Front()
+	list.MoveToBack(front)
+	// 1 2 3
+	if list.Back().Value != 3 {
+		t.Error("MoveToBack is invalid")
+	}
+
+	back := list.Back()
+	list.MoveToBack(back) // nothing to do
+	if list.Back().Value != 3 {
+		t.Error("MoveToBack is invalid")
+	}
+}
+
+func TestMove(t *testing.T) {
+	list := NewWithData(1, 2, 3, 4)
+	a := list.Front()
+	b := list.Front().Next()
+	c := list.Front().Next().Next()
+	d := list.Front().Next().Next().Next()
+
+	list.MoveBefore(d, c)
+	// 1 2 4 3
+	if list.Back().Value != 3 {
+		t.Error("MoveBefore is invalid")
+	}
+
+	list.MoveBefore(c, a)
+	// 3 1 2 4
+	if list.Front().Value != 3 {
+		t.Error("MoveBefore is invalid")
+	}
+
+	list.MoveBefore(c, c) // nothing to do
+	// 3 1 2 4
+	if list.Front().Value != 3 {
+		t.Error("MoveBefore is invalid")
+	}
+
+	list.MoveAfter(b, d)
+	// 3 1 4 2
+	if list.Back().Value != 2 {
+		t.Error("MoveAfter is invalid")
+	}
+
+	list.MoveAfter(a, b)
+	// 3 4 2 1
+	if list.Back().Value != 1 {
+		t.Error("MoveAfter is invalid")
+	}
+
+	list.MoveAfter(d, d) // nothing to do
+	// 3 4 2 1
+	if list.Back().Value != 1 {
+		t.Error("MoveAfter is invalid")
+	}
+
+	list.move(a, a) // nothing to do
+	// 3 4 2 1
+	if list.Back().Value != 1 {
+		t.Error("MoveAfter is invalid")
+	}
+
+	if list.PopBack() != 1 {
+		t.Error("Move is invalid")
+	}
+	if list.PopBack() != 2 {
+		t.Error("Move is invalid")
+	}
+	if list.PopBack() != 4 {
+		t.Error("Move is invalid")
+	}
+	if list.PopBack() != 3 {
+		t.Error("Move is invalid")
 	}
 }
 
