@@ -4,8 +4,6 @@
 
 package vector
 
-import "errors"
-
 type Vector[T any] []T
 
 // New creates a new empty Vector[T].
@@ -15,6 +13,7 @@ func New[T any]() *Vector[T] {
 }
 
 // NewWithData creates a Vector[T] with data
+// Data will be placed in order.
 func NewWithData[T any](data ...T) *Vector[T] {
 	vec := New[T]()
 	for _, x := range data {
@@ -39,16 +38,25 @@ func (vec *Vector[T]) Empty() bool {
 }
 
 // Front returns the reference of data at the first element of the vector.
+// Front will return nil if it is empty.
 func (vec *Vector[T]) Front() *T {
-	return &(*vec)[0]
+	if len(*vec) > 0 {
+		return &(*vec)[0]
+	}
+	return nil
 }
 
 // Back returns the reference of data at the last element of the vector.
+// Front will return nil if it is empty.
 func (vec *Vector[T]) Back() *T {
-	return &(*vec)[len(*vec)-1]
+	if len(*vec) > 0 {
+		return &(*vec)[len(*vec)-1]
+	}
+	return nil
 }
 
 // Resize resizes the vector to the specified number of elements.
+// Resize will allocate new space.
 func (vec *Vector[T]) Resize(n int) {
 	temp := make(Vector[T], n)
 	copy(temp, *vec)
@@ -56,6 +64,7 @@ func (vec *Vector[T]) Resize(n int) {
 }
 
 // Assign assigns a given value to a vector.
+// Assign will allocate new space.
 func (vec *Vector[T]) Assign(n int, val T) {
 	*vec = make(Vector[T], n)
 	for i := range *vec {
@@ -69,38 +78,46 @@ func (vec *Vector[T]) PushBack(val T) {
 }
 
 // PopBack removes last element and returns the value of the element.
-// The vec must not be empty
-func (vec *Vector[T]) PopBack() T {
-	defer func() { *vec = (*vec)[:len(*vec)-1] }()
-	return (*vec)[len(*vec)-1]
+// When vec is empty, vec will not be modified.
+// PopBack returns the default value of T when vec is empty.
+func (vec *Vector[T]) PopBack() (value T) {
+	if len(*vec) > 0 {
+		temp := (*vec)[len(*vec)-1]
+		*vec = (*vec)[:len(*vec)-1]
+		return temp
+	}
+	return
 }
 
 // Insert inserts given value into vector before specified position.
-// The pos index must be in the the range of the vector.
+// If pos < 0 or pos > len(*vec), vec will not be modified.
 func (vec *Vector[T]) Insert(pos int, val T) {
-	*vec = append(*vec, val)
-	copy((*vec)[pos+1:], (*vec)[pos:])
-	(*vec)[pos] = val
+	if 0 <= pos && pos <= len(*vec) {
+		*vec = append(*vec, val)
+		copy((*vec)[pos+1:], (*vec)[pos:])
+		(*vec)[pos] = val
+	}
 }
 
 // Erase removes element at given position and returns the value of the element.
-// The pos index must be in the the range of the vector.
-func (vec *Vector[T]) Erase(pos int) T {
-	defer func() {
+// When pos is out of range, vec will not be modified and erase will return the default value of T.
+func (vec *Vector[T]) Erase(pos int) (value T) {
+	if 0 <= pos && pos < len(*vec) {
+		temp := (*vec)[pos]
 		copy((*vec)[pos:], (*vec)[pos+1:])
 		*vec = (*vec)[:len(*vec)-1]
-	}()
-	return (*vec)[pos]
+		return temp
+	}
+	return
 }
 
-// At provides for safer data access.
-// The parameter is first checked that it is in the range of the vector.
-// The function will return error "index out of range" if the check fails.
-func (vec *Vector[T]) At(pos int) (*T, error) {
-	if pos < 0 || pos >= len(*vec) {
-		return nil, errors.New("index out of range")
+// At returns a reference to the data at position pos.
+// If pos is out of range, At will return nil.
+func (vec *Vector[T]) At(pos int) *T {
+	if 0 <= pos && pos < len(*vec) {
+		return &(*vec)[pos]
 	}
-	return &(*vec)[pos], nil
+	return nil
 }
 
 // ShrinkToFit is to reduce Capacity() to Size().

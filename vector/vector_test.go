@@ -21,6 +21,22 @@ func TestMake(t *testing.T) {
 func TestFrontBack(t *testing.T) {
 	vec := make(Vector[int], 10)
 	t.Log(*vec.Front(), *vec.Back())
+	vec.Clear()
+	if vec.Front() != nil || vec.Back() != nil {
+		t.Error("front or back is invalid")
+	}
+}
+
+func TestResize(t *testing.T) {
+	vec := NewWithData(1, 2, 3, 4, 5)
+	vec.Resize(10)
+	for i := range *vec {
+		t.Log((*vec)[i])
+	}
+	vec.Resize(3)
+	for i := range *vec {
+		t.Log((*vec)[i])
+	}
 }
 
 func TestPushPop(t *testing.T) {
@@ -38,11 +54,23 @@ func TestPushPop(t *testing.T) {
 		vec.PopBack()
 		t.Log(vec, vec.Size(), vec.Capacity(), vec.Empty())
 	}
+
+	if vec.PopBack() != 0 {
+		t.Error("PopBack defalut value is invalid")
+	}
+}
+
+func TestInsertBack(t *testing.T) {
+	vec := New[int]()
+	for i := 0; i < 10; i++ {
+		vec.Insert(i, i)
+		t.Log(*vec, vec.Capacity(), vec.Size())
+	}
 }
 
 func TestPushPopEfficiency(t *testing.T) {
 	var vec Vector[int]
-	const N = 10000000
+	const N = 100000000
 
 	start := time.Now()
 	for i := 0; i < N; i++ {
@@ -88,6 +116,10 @@ func TestErase(t *testing.T) {
 		t.Log(vec, vec.Erase(4))
 	}
 
+	if vec.Erase(100) != 0 {
+		t.Error("Erase defalut value is invalid")
+	}
+
 	for i := 0; i < 5; i++ {
 		t.Log(vec, vec.Erase(vec.Size()-1))
 	}
@@ -99,11 +131,11 @@ func TestAt(t *testing.T) {
 	vec.PushBack("b")
 	vec.PushBack("c")
 	for i := 0; i < 5; i++ {
-		val, err := vec.At(i)
-		if err != nil {
-			t.Log(err)
+		val := vec.At(i)
+		if val != nil {
+			t.Log(val)
 		} else {
-			t.Log(*val)
+			t.Log("nil")
 		}
 	}
 }
@@ -158,4 +190,8 @@ func TestNewWithDataAndClear(t *testing.T) {
 	if !vec.Empty() {
 		t.Error("clear is invalid")
 	}
+	vec.Clear()
+	vec.Clear()
+	vec.Assign(1, 1)
+	vec.Clear()
 }
