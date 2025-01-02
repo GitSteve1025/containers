@@ -123,7 +123,7 @@ func TestWrongInsert(t *testing.T) {
 	if b.PopFront() != 0 {
 		t.Error("popfront is error")
 	}
-	if b.Erase(ap) != 0 {
+	if b.Erase(ap) != 1 {
 		t.Error("erase is error")
 	}
 }
@@ -295,7 +295,7 @@ func TestAllFunction(t *testing.T) {
 	}
 
 	temp := NewWithData(1)
-	if list.Erase(temp.Front()) != 0 {
+	if list.Erase(temp.Front()) != 1 {
 		t.Error("erase default value is invalid")
 	}
 

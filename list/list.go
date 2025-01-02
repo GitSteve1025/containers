@@ -43,7 +43,7 @@ func (e *Element[T]) Next() *Element[T] {
 
 // doubly-linked list.
 type List[T any] struct {
-	// sentinel list element, &root, root.prev, and root.next are used, root.value represents the default value
+	// sentinel list element, only &root, root.prev, and root.next are used.
 	root Element[T]
 	// length of list.
 	size int
@@ -159,33 +159,34 @@ func (list *List[T]) erase(at *Element[T]) {
 
 // PopBack removes last element and returns the value of the element.
 // It will return default value of T when list is empty.
-func (list *List[T]) PopBack() T {
+func (list *List[T]) PopBack() (value T) {
 	if list.size > 0 {
-		defer list.erase(list.root.prev)
-		return list.root.prev.Value
+		temp := list.root.prev.Value
+		list.erase(list.root.prev)
+		return temp
 	}
-	return list.root.Value
+	return
 }
 
 // PopFront removes the first element and returns the value of the element.
 // It will return default value of T when list is empty.
-func (list *List[T]) PopFront() T {
+func (list *List[T]) PopFront() (value T) {
 	if list.size > 0 {
-		defer list.erase(list.root.next)
-		return list.root.next.Value
+		temp := list.root.next.Value
+		list.erase(list.root.next)
+		return temp
 	}
-	return list.root.Value
+	return
 }
 
 // Erase erases at element and returns the value.
-// If at is not an element of list, the list is not modified, it will return default value.
+// If at is not an element of list, the list is not modified, it will return at.Value.
 // The at must not be nil.
 func (list *List[T]) Erase(at *Element[T]) T {
 	if at.list == list {
-		defer list.erase(at)
-		return at.Value
+		list.erase(at)
 	}
-	return list.root.Value
+	return at.Value
 }
 
 // Clear clears the list
