@@ -108,3 +108,42 @@ func TestEfficiency(t *testing.T) {
 	}
 	t.Log("Pop", N, "digits costs", time.Since(startTime))
 }
+
+func generateData(n int) []int {
+	var expect []int
+	for i := 0; i < n; i++ {
+		expect = append(expect, rand.Intn(1000000000))
+	}
+	return expect
+}
+
+func BenchmarkMakeHeap(b *testing.B) {
+	expect := generateData(b.N)
+
+	b.ResetTimer()
+	heap := NewWithData(func(a int, b int) bool { return a < b }, expect...)
+	b.StartTimer()
+	b.Log(heap.Size())
+}
+
+func BenchmarkPush(b *testing.B) {
+	b.Log(b.N)
+	expect := generateData(b.N)
+
+	b.ResetTimer()
+	heap := New(func(a int, b int) bool { return a < b })
+	for i := 0; i < b.N; i++ {
+		heap.Push(expect[i])
+	}
+}
+
+func BenchmarkPop(b *testing.B) {
+	b.Log(b.N)
+	expect := generateData(b.N)
+	heap := NewWithData(func(a int, b int) bool { return a < b }, expect...)
+
+	b.ResetTimer()
+	for !heap.Empty() {
+		heap.Pop()
+	}
+}
