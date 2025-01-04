@@ -5,6 +5,7 @@
 package list
 
 import (
+	"math/rand"
 	"testing"
 	"time"
 )
@@ -344,5 +345,53 @@ func TestPushPopEfficiency(t *testing.T) {
 			list.PopFront()
 		}
 		t.Log("Popfront", N, " digits costs ", time.Since(start))
+	}
+}
+
+func generateData(n int) []int {
+	var expect []int
+	for i := 0; i < n; i++ {
+		expect = append(expect, rand.Intn(1000000000))
+	}
+	return expect
+}
+
+func BenchmarkPushBack(b *testing.B) {
+	b.Log(b.N)
+	list := New[int]()
+	val := generateData(b.N)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		list.PushBack(val[i])
+	}
+}
+
+func BenchmarkPushFront(b *testing.B) {
+	b.Log(b.N)
+	list := New[int]()
+	val := generateData(b.N)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		list.PushFront(val[i])
+	}
+}
+
+func BenchmarkPopBack(b *testing.B) {
+	b.Log(b.N)
+	val := generateData(b.N)
+	list := NewWithData(val...)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		list.PopBack()
+	}
+}
+
+func BenchmarkPopFront(b *testing.B) {
+	b.Log(b.N)
+	val := generateData(b.N)
+	list := NewWithData(val...)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		list.PopFront()
 	}
 }
