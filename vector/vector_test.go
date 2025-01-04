@@ -5,6 +5,7 @@
 package vector
 
 import (
+	"math/rand"
 	"testing"
 	"time"
 )
@@ -194,4 +195,31 @@ func TestNewWithDataAndClear(t *testing.T) {
 	vec.Clear()
 	vec.Assign(1, 1)
 	vec.Clear()
+}
+
+func generateData(n int) []int {
+	var expect []int
+	for i := 0; i < n; i++ {
+		expect = append(expect, rand.Intn(1000000000))
+	}
+	return expect
+}
+
+func BenchmarkPushBack(b *testing.B) {
+	val := generateData(b.N)
+	b.ResetTimer()
+	var vec Vector[int]
+	for i := 0; i < b.N; i++ {
+		vec.PushBack(val[i])
+
+	}
+}
+
+func BenchmarkPopBack(b *testing.B) {
+	val := generateData(b.N)
+	vec := NewWithData(val...)
+	b.ResetTimer()
+	for !vec.Empty() {
+		vec.PopBack()
+	}
 }
