@@ -15,11 +15,9 @@ func New[T any]() *Vector[T] {
 // NewWithData creates a Vector[T] with data
 // Data will be placed in order.
 func NewWithData[T any](data ...T) *Vector[T] {
-	vec := New[T]()
-	for _, x := range data {
-		*vec = append(*vec, x)
-	}
-	return vec
+	vec := make(Vector[T], len(data))
+	copy(vec, data)
+	return &vec
 }
 
 // Size returns the number of elements in the vector.
