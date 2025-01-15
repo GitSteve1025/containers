@@ -31,9 +31,8 @@ func (stack *Stack[T]) Push(value T) {
 // Pop removes and returns the top of the stack, or the default value of T if the stack is empty.
 func (stack *Stack[T]) Pop() (value T) {
 	if len(stack.value) > 0 {
-		temp := stack.value[len(stack.value)-1]
+		value = stack.value[len(stack.value)-1]
 		stack.value = (stack.value)[:len(stack.value)-1]
-		return temp
 	}
 	return
 }
