@@ -161,9 +161,8 @@ func (list *List[T]) erase(at *Element[T]) {
 // It will return default value of T when list is empty.
 func (list *List[T]) PopBack() (value T) {
 	if list.size > 0 {
-		temp := list.root.prev.Value
+		value = list.root.prev.Value
 		list.erase(list.root.prev)
-		return temp
 	}
 	return
 }
@@ -172,9 +171,8 @@ func (list *List[T]) PopBack() (value T) {
 // It will return default value of T when list is empty.
 func (list *List[T]) PopFront() (value T) {
 	if list.size > 0 {
-		temp := list.root.next.Value
+		value = list.root.next.Value
 		list.erase(list.root.next)
-		return temp
 	}
 	return
 }
