@@ -111,7 +111,7 @@ func (heap *Heap[T]) Push(value T) {
 // If the heap is empty, Top will return the default value of T.
 func (heap *Heap[T]) Top() (value T) {
 	if len(heap.value) > 0 {
-		return heap.value[0]
+		value = heap.value[0]
 	}
 	return
 }
@@ -120,12 +120,11 @@ func (heap *Heap[T]) Top() (value T) {
 // If the heap is empty, Pop will return the default value of T.
 func (heap *Heap[T]) Pop() (value T) {
 	if len(heap.value) > 0 {
+		value = heap.value[0]
 		n := len(heap.value) - 1
-		temp := heap.value[0]
 		heap.value[0] = heap.value[n]
 		heap.value = heap.value[:n]
 		heap.heapify(0)
-		return temp
 	}
 	return
 }
