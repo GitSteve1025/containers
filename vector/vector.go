@@ -80,9 +80,8 @@ func (vec *Vector[T]) PushBack(val T) {
 // PopBack returns the default value of T when vec is empty.
 func (vec *Vector[T]) PopBack() (value T) {
 	if len(*vec) > 0 {
-		temp := (*vec)[len(*vec)-1]
+		value = (*vec)[len(*vec)-1]
 		*vec = (*vec)[:len(*vec)-1]
-		return temp
 	}
 	return
 }
@@ -101,10 +100,9 @@ func (vec *Vector[T]) Insert(pos int, val T) {
 // When pos is out of range, vec will not be modified and erase will return the default value of T.
 func (vec *Vector[T]) Erase(pos int) (value T) {
 	if 0 <= pos && pos < len(*vec) {
-		temp := (*vec)[pos]
+		value = (*vec)[pos]
 		copy((*vec)[pos:], (*vec)[pos+1:])
 		*vec = (*vec)[:len(*vec)-1]
-		return temp
 	}
 	return
 }
