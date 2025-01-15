@@ -4,7 +4,13 @@
 
 package redblacktree
 
+// color red = false, black = true
 type color bool
+
+const (
+	red   color = false
+	black color = true
+)
 
 type Node[K any, V any] struct {
 	size   int // record size of subtree.
@@ -103,4 +109,64 @@ func (rbt *RedBlackTree[K, V]) Kth(k int) *Node[K, V] {
 // Merge merges that to this red black tree.
 func (rbt *RedBlackTree[K, V]) Merge(that *RedBlackTree[K, V]) {
 	// to do
+}
+
+// maintain maintains Node, like size.
+// maintain requires bottom-up operation.
+// N must not be nil.
+func maintain[K any, V any](N *Node[K, V]) {
+	N.size = 1
+	if N.left != nil {
+		N.size += N.left.size
+	}
+
+	if N.right != nil {
+		N.size += N.right.size
+	}
+}
+
+// rotateLeft rotates N and returns S.
+// N / N.right must not be nil.
+//     |                       |
+//     N                       S
+//    / \     rotateLeft(N)   / \
+//   L   S    ==========>    N   R
+//      / \                 / \
+//     M   R               L   M
+func rotateLeft[K any, V any](N *Node[K, V]) *Node[K, V] {
+	S := N.right
+	N.right = S.left
+	if S.left != nil {
+		S.left.parent = N
+	}
+	S.left = N
+	S.parent = N.parent
+	N.parent = S
+
+	maintain(N)
+	maintain(S)
+	return S
+}
+
+// rotateLeft rotates N and returns S.
+// N / N.left must not be nil.
+//       |                   |
+//       N                   S
+//      / \   r-rotate(N)   / \
+//     S   R  ==========>  L   N
+//    / \                     / \
+//   L   M                   M   R
+func rotateRight[K any, V any](N *Node[K, V]) *Node[K, V] {
+	S := N.left
+	N.left = S.right
+	if S.right != nil {
+		S.right.parent = N
+	}
+	S.right = N
+	S.parent = N.parent
+	N.parent = S
+
+	maintain(N)
+	maintain(S)
+	return S
 }
