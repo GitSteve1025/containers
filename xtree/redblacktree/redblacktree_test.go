@@ -6,6 +6,7 @@ package redblacktree
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
 )
 
@@ -54,6 +55,51 @@ func same(t *testing.T, a any, b any) {
 	}
 }
 
+// check rbt.
+// 1. Nodes are red or black.
+// 2. NIL nodes (empty leaf nodes) are black
+// 3. Children of red nodes are black.
+// 4. Same number of black nodes on each path from root to NIL node
+func validater[K any, V any](t *testing.T, rbt *RedBlackTree[K, V]) {
+	var value []K
+	rootToLeaf := make(map[int]int)
+	var dfs func(cur *Node[K, V], count int)
+	dfs = func(cur *Node[K, V], count int) {
+		if cur == nil {
+			count++
+			rootToLeaf[count]++
+			return
+		}
+
+		if isRed(cur) {
+			if !isBlack(cur.left) {
+				t.Error("cur is red but left is not black")
+			}
+
+			if !isBlack(cur.right) {
+				t.Error("cur is red but right is not black")
+			}
+		} else {
+			count++
+		}
+
+		dfs(cur.left, count)
+		value = append(value, cur.Key)
+		dfs(cur.right, count)
+	}
+	dfs(rbt.root, 0)
+
+	if len(rootToLeaf) > 1 {
+		t.Error("number of black nodes on each path from root to NIL node is not same")
+	}
+
+	for i := 1; i < len(value); i++ {
+		if rbt.comparator(value[i], value[i-1]) {
+			t.Error("rbt is not a balance tree")
+		}
+	}
+}
+
 func TestRotateLeft(t *testing.T) {
 	//     |                       |
 	//     N                       S
@@ -62,11 +108,11 @@ func TestRotateLeft(t *testing.T) {
 	//      / \                 / \
 	//     M   R               L   M
 
-	N := &Node[int, int]{Key: 1, Value: 1, size: 5}
-	L := &Node[int, int]{Key: 2, Value: 2, size: 1}
-	S := &Node[int, int]{Key: 3, Value: 3, size: 3}
-	M := &Node[int, int]{Key: 4, Value: 4, size: 1}
-	R := &Node[int, int]{Key: 5, Value: 5, size: 1}
+	N := &Node[int, int]{Key: 1, Value: 1}
+	L := &Node[int, int]{Key: 2, Value: 2}
+	S := &Node[int, int]{Key: 3, Value: 3}
+	M := &Node[int, int]{Key: 4, Value: 4}
+	R := &Node[int, int]{Key: 5, Value: 5}
 
 	N.left = L
 	N.right = S
@@ -77,8 +123,12 @@ func TestRotateLeft(t *testing.T) {
 	M.parent = S
 	R.parent = S
 
+	rbt := New[int, int](func(left, right int) bool { return left < right })
+	rbt.root = N
+
 	t.Log(structure(N))
-	t.Log(structure(rotateLeft(N)))
+	rbt.rotateLeft(N)
+	t.Log(structure(S))
 
 	same(t, S.left, N)
 	same(t, S.right, R)
@@ -88,12 +138,7 @@ func TestRotateLeft(t *testing.T) {
 	same(t, N.right, M)
 	same(t, L.parent, N)
 	same(t, M.parent, N)
-
-	same(t, S.size, 5)
-	same(t, N.size, 3)
-	same(t, R.size, 1)
-	same(t, L.size, 1)
-	same(t, M.size, 1)
+	same(t, rbt.root, S)
 }
 
 func TestRotateRight(t *testing.T) {
@@ -103,11 +148,11 @@ func TestRotateRight(t *testing.T) {
 	//     S   R  ==========>  L   N
 	//    / \                     / \
 	//   L   M                   M   R
-	N := &Node[int, int]{Key: 1, Value: 1, size: 5}
-	L := &Node[int, int]{Key: 2, Value: 2, size: 1}
-	S := &Node[int, int]{Key: 3, Value: 3, size: 3}
-	M := &Node[int, int]{Key: 4, Value: 4, size: 1}
-	R := &Node[int, int]{Key: 5, Value: 5, size: 1}
+	N := &Node[int, int]{Key: 1, Value: 1}
+	L := &Node[int, int]{Key: 2, Value: 2}
+	S := &Node[int, int]{Key: 3, Value: 3}
+	M := &Node[int, int]{Key: 4, Value: 4}
+	R := &Node[int, int]{Key: 5, Value: 5}
 
 	N.left = S
 	N.right = R
@@ -118,8 +163,12 @@ func TestRotateRight(t *testing.T) {
 	L.parent = S
 	M.parent = S
 
+	rbt := New[int, int](func(left, right int) bool { return left < right })
+	rbt.root = N
+
 	t.Log(structure(N))
-	t.Log(structure(rotateRight(N)))
+	rbt.rotateRight(N)
+	t.Log(structure(S))
 
 	same(t, S.left, L)
 	same(t, S.right, N)
@@ -129,10 +178,43 @@ func TestRotateRight(t *testing.T) {
 	same(t, N.right, R)
 	same(t, M.parent, N)
 	same(t, R.parent, N)
+	same(t, rbt.root, S)
+}
 
-	same(t, S.size, 5)
-	same(t, N.size, 3)
-	same(t, R.size, 1)
-	same(t, L.size, 1)
-	same(t, M.size, 1)
+func TestInsert(t *testing.T) {
+	rbt := New[int, int](func(a, b int) bool { return a < b })
+
+	for i := 10; i >= 0; i-- {
+		rbt.Insert(i, i)
+	}
+
+	validater(t, rbt)
+
+	rbt.root = nil
+
+	for i := 0; i <= 10; i++ {
+		rbt.Insert(i, i)
+	}
+
+	validater(t, rbt)
+}
+
+func TestRandInsert(t *testing.T) {
+	N := 10000
+	rbt := New[int, int](func(a, b int) bool { return a < b })
+
+	for i := 0; i < 100; i++ {
+		rbt.Insert(rand.Intn(N), rand.Intn(N))
+	}
+
+	validater(t, rbt)
+}
+
+func BenchmarkRandInsert(b *testing.B) {
+	MaxVal := 1000000000
+	rbt := New[int, int](func(a, b int) bool { return a < b })
+
+	for i := 0; i < b.N; i++ {
+		rbt.Insert(rand.Intn(MaxVal), i)
+	}
 }
